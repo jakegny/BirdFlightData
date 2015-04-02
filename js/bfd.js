@@ -12,8 +12,8 @@ function draw(geo_data) {
       .attr('class', 'USmap');
 
   var projection = d3.geo.mercator()
-                         .scale(140)
-                         .translate( [width / 2, height / 1.2]);
+                         .center([-100, 43]) // TODO: Set this to users location
+                         .scale(800);
 
   var path = d3.geo.path().projection(projection);
 
@@ -26,39 +26,18 @@ function draw(geo_data) {
                .style('stroke', 'black')
                .style('stroke-width', 0.5);
 
-  function plot_points(data) {
-    //draw circles logic
-    debugger;
-    var nested = d3.nest()
-                   .key(function(d) {
-                      debugger;
-                      return d['date'].getUTCFullYear();
-                   })
-                   .rollup(function(leaves) {
-                      debugger;
-                      var total = d3.sum(leaves, function(d){
-                        return d['attendance'];
-                      });
-                      var coords = leaves.map(function(d){
-                        return projection([+d.long, +d.lat]);
-                      });
-                      var center_x = d3.mean(coords, function(d){
-                        return d[0];
-                      });
+  var g = svg.append("g");
 
-                   })
-                   .entries(data);
-  };
-
-  var format = d3.time.format("%d-%m-%Y (%H:%M h)");
-
-  d3.tsv("world_cup_geo.tsv", function(d){
-    d['attendance'] = +d['attendance'];
-    d['date'] = format.parse(d['date']);
-    return d;
-  }, plot_points);
-
-
+  d3.csv("SightingData.csv", function(error, data){
+    g.selectAll("circle")
+      .data(data)
+      .enter()
+      .append("circle" )
+      .attr("cx", function(d){ return projection([d.LONGITUDE, d.LATITUDE])[0]; })
+      .attr("cy", function(d){ return projection([d.LONGITUDE, d.LATITUDE])[1]; })
+      .attr("r", 1)
+      .style("fill", "red")
+  });
 
 
 

@@ -11,6 +11,9 @@ function draw(geo_data) {
       .append('g')
       .attr('class', 'USmap');
 
+  var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", 
+                "Sept", "Oct", "Nov", "Dec"];
+
   var projection = d3.geo.mercator()
                          .center([-100, 43]) // TODO: Set this to users location
                          .scale(800);
@@ -37,11 +40,6 @@ function draw(geo_data) {
       .attr("cy", function(d){ return projection([d.LONGITUDE, d.LATITUDE])[1]; })
       .attr("r", 1)
       .style("fill", "red")
-  });
-
-
-
-
-
+  } );
 };
 
